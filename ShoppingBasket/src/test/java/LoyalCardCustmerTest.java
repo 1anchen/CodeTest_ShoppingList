@@ -18,9 +18,16 @@ public class LoyalCardCustmerTest{
     }
 
     @Test
-    public void canGetRatedPercentage(){
+    public void canSetPrice(){
 
-        assertEquals(0.98,  Duncan.twoPercentOff(0.02),0.00);
+        Duncan.setWallet(90.00);
+        assertEquals(90.00, Duncan.getWallet(),0.00);
+    }
+
+    @Test
+    public void canGetRoyaltyRate(){
+
+        assertEquals(0.98,  Duncan.twoPercentOff(),0.00);
     }
 
 

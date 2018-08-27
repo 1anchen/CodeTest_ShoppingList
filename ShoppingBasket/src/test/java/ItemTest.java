@@ -10,7 +10,7 @@ public class ItemTest {
 
     @Before
     public void before() {
-        CD = new Item(1,"High Kick", 10.00);
+        CD = new Item(1,"Best Song Ever", 10.00);
 
     }
 
@@ -22,7 +22,7 @@ public class ItemTest {
 
     @Test
     public void canGetName(){
-        assertEquals("High Kick", CD.getName());
+        assertEquals("Best Song Ever", CD.getName());
     }
 
     @Test

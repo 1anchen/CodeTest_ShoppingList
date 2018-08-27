@@ -11,7 +11,7 @@ public class DiscountItemTest {
 
         @Before
         public void before() {
-            CD = new DiscountItem(1,"High Kick", 10.00);
+            CD = new DiscountItem(1,"Best Song Ever", 10.00);
 
         }
 
@@ -23,7 +23,7 @@ public class DiscountItemTest {
 
         @Test
         public void canGetName(){
-            assertEquals("High Kick", CD.getName());
+            assertEquals("Best Song Ever", CD.getName());
         }
 
         @Test
@@ -41,7 +41,7 @@ public class DiscountItemTest {
 
         @Test
         public void canGetSecondOneFree(){
-        CD.GetSecondFree(CD);
-        assertEquals(0, CD.getPrice(),0.00);
+            CD.getSecondFree(CD);
+            assertEquals(0, CD.getPrice(),0.00);
     }
 }

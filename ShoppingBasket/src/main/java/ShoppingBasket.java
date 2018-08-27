@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+
+import java.util.HashMap;
 
 import Interface.ILoyal;
 import Item.*;
@@ -6,48 +7,62 @@ import Customer.*;
 
 public class ShoppingBasket{
 
-    protected ArrayList<Item> basket;
-    protected Double total;
+    protected HashMap<Item,Integer> basket;
+    protected double total;
+    protected Customer customer;
 
-    public ShoppingBasket(){
-        this.basket = new ArrayList<>();
+    public ShoppingBasket(Customer customer){
+        this.customer = customer;
+        this.basket = new HashMap<>();
         this.total = 0.00;
     }
 
-    public ArrayList<Item> getBasket() {
+    public HashMap<Item,Integer> getBasket() {
         return this.basket;
     }
 
     public int getNumberOfItemsInTheBasket() {
-        return this.basket.size();
+        int totalItems = 0;
+        for(int quantity : basket.values()){
+            totalItems += quantity;
+        }
+        return totalItems;
     }
 
     public double getTotal() {
-        return this.total;
+        return this.roundTotal();
     }
 
-    public void addItemToBasket(Item item) {
-        this.basket.add(item);
-        addToTotal(item);
+    private double roundTotal(){
+        return total= Math.round(total*100.00)/100.00;
+    }
+
+    public void addItemToBasket(Item item, int quantity) {
+        if(quantity>0) {
+            this.basket.put(item, quantity);
+            addToTotal(item);
+        }else throw new IllegalArgumentException("Item must be more than 1");
 
     }
 
     public void addToTotal(Item item){
-        this.total += item.getPrice();
+        if(basket.get(item)>1) {
+            this.total += item.getPrice()*basket.get(item);
+        }else {
+            this.total +=item.getPrice();
+        }
     }
 
     public void removeFromTotal(Item item){
         this.total -= item.getPrice();
     }
 
-    public void removeItemToBasket(Item item) {
-        //Checking if the Item has already been added before remove
-        for(int i=0; i<this.basket.size(); i++){
-          if(this.basket.get(i) == item){
-              this.basket.remove(item);
-              removeFromTotal(item);
-          }
+    public void removeItemFromBasket(Item item) {
+        if(basket.containsKey(item)) {
+            this.basket.remove(item);
+            removeFromTotal(item);
         }
+
     }
 
     public void emptyBasket() {
@@ -55,9 +70,13 @@ public class ShoppingBasket{
         this.total = 0.00;
     }
 
-    public void buyOneGetOneFree(DiscountItem item){
-        addItemToBasket(item);
-        addItemToBasket(item.GetSecondFree(item));
+
+    public void buyOneGetOneFree(DiscountItem item,int quantity){
+
+        if(quantity%2==0){
+            item.setPrice(item.getPrice()/quantity);
+        }
+        addItemToBasket(item,quantity);
     }
 
     public boolean isTotalOverTwenty(){
@@ -73,14 +92,15 @@ public class ShoppingBasket{
     }
 
     public void applyLoyalDiscount(ILoyal iLoyal){
-        this.total *=iLoyal.twoPercentOff(0.02);
+        this.total *=iLoyal.twoPercentOff();
     }
 
-    public void chargeCustomer(Customer customer){
+    public void chargeCustomer(){
         Double total = customer.getWallet();
         total -= this.total;
         customer.setWallet(total);
     }
+
 
 
 

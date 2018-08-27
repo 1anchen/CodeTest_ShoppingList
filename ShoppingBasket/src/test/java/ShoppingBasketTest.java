@@ -2,6 +2,7 @@ import Item.*;
 import Customer.*;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,27 +15,35 @@ public class ShoppingBasketTest {
     LoyalCardCustomer Duncan;
 
 
-    ShoppingBasket shoppingBasket;
+    ShoppingBasket shoppingBasketForDuncan;
+    ShoppingBasket shoppingBasketForRuri;
 
     @Before
     public void before(){
-        CD = new DiscountItem(1,"High Kick", 10.00);
-        Bread = new Item(2,"Soft ",1.00);
-        Gin = new Item(3,"Strong",15.00);
+        CD = new DiscountItem(1,"Best Song Ever", 9.99);
+        Bread = new Item(2,"Soft White ",1.00);
+        Gin = new Item(3,"Just Gin",15.00);
         Ruri = new Customer(100);
         Duncan = new LoyalCardCustomer(100);
-        shoppingBasket = new ShoppingBasket();
+        shoppingBasketForDuncan = new ShoppingBasket(Duncan);
+        shoppingBasketForRuri = new ShoppingBasket(Ruri);
     }
 
     //Basic Getter Test
     @Test
+    public void canGetEmptyBasket(){
+        HashMap<Item,Integer> emptyBasket = new HashMap<>();
+        assertEquals(emptyBasket,shoppingBasketForDuncan.getBasket());
+    }
+
+    @Test
     public void canGetNumberOfItemsInTheBasket(){
-        assertEquals(0,shoppingBasket.getNumberOfItemsInTheBasket());
+        assertEquals(0,shoppingBasketForDuncan.getNumberOfItemsInTheBasket());
     }
 
     @Test
     public void canGetTotal(){
-        assertEquals(0,shoppingBasket.getTotal(),0.00);
+        assertEquals(0,shoppingBasketForDuncan.getTotal(),0.00);
     }
 
 
@@ -42,243 +51,243 @@ public class ShoppingBasketTest {
     //Can Add Item
     @Test
     public void canAddCDToTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        assertEquals(1,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        assertEquals(1,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotAddCDWithZeroQuantityToTheBasket(){
+        shoppingBasketForRuri.addItemToBasket(CD,0);
+        assertEquals(0,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
     @Test
     public void canAddCDAndBreadToTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.addItemToBasket(Bread);
-        assertEquals(2,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.addItemToBasket(Bread,1);
+        assertEquals(2,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
 
     //Can Add Item + Calculate Total Price
     @Test
     public void canAddCDAndPriceToTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        assertEquals(1,shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(10.00,shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        assertEquals(1,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(9.99,shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void canAddCDAndBreadAndThePriceToTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.addItemToBasket(Bread);
-        assertEquals(2,shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(11,shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.addItemToBasket(Bread,1);
+        assertEquals(2,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(10.99,shoppingBasketForRuri.getTotal(),0.00);
     }
 
 
     //Can Remove Item
     @Test
     public void canRemoveCDFromTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(CD);
-        assertEquals(0,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.removeItemFromBasket(CD);
+        assertEquals(0,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
     @Test
     public void canNotRemoveBreadAfterAddedCDFromTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(Bread);
-        assertEquals(1,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.removeItemFromBasket(Bread);
+        assertEquals(1,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
     @Test
     public void canRemoveCDAndBreadFromTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.addItemToBasket(Bread);
-        shoppingBasket.removeItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(Bread);
-        assertEquals(0,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.addItemToBasket(Bread,1);
+        shoppingBasketForRuri.removeItemFromBasket(CD);
+        shoppingBasketForRuri.removeItemFromBasket(Bread);
+        assertEquals(0,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
 
     //Can Remove Item + Reduce Total Price
     @Test
     public void canRemoveCDFromTheBasketAndReducePrice(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(CD);
-        assertEquals(0,shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(0,shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.removeItemFromBasket(CD);
+        assertEquals(0,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(0,shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void canNotRemoveBreadAfterAddedCDFromTheBasketWithPrice(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(Bread);
-        assertEquals(1,shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(10.00,shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.removeItemFromBasket(Bread);
+        assertEquals(1,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(9.99,shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void canRemoveCDAndBreadFromTheBasketWithPrice() {
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.addItemToBasket(Bread);
-        shoppingBasket.removeItemToBasket(CD);
-        shoppingBasket.removeItemToBasket(Bread);
-        assertEquals(0, shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(0, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.addItemToBasket(Bread,1);
+        shoppingBasketForRuri.removeItemFromBasket(CD);
+        shoppingBasketForRuri.removeItemFromBasket(Bread);
+        assertEquals(0, shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(0, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     //Can Clear Basket
     @Test
     public void canClearTheBasket(){
-        shoppingBasket.addItemToBasket(CD);
-        shoppingBasket.addItemToBasket(Bread);
-        shoppingBasket.emptyBasket();
-        assertEquals(0,shoppingBasket.getNumberOfItemsInTheBasket());
+        shoppingBasketForRuri.addItemToBasket(CD,1);
+        shoppingBasketForRuri.addItemToBasket(Bread,1);
+        shoppingBasketForRuri.emptyBasket();
+        assertEquals(0,shoppingBasketForRuri.getNumberOfItemsInTheBasket());
     }
 
 
     //Can Test Buy One Get One Free
     @Test
     public void canApplyBuyOneGetOneFree(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        assertEquals(2, shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(10.00, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        assertEquals(2, shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(9.99, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void cannotApplyBuyOneGetOneFreeForNoneDiscountedItem(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.addItemToBasket(Gin);
-        assertEquals(4, shoppingBasket.getNumberOfItemsInTheBasket());
-        assertEquals(40.00, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.addItemToBasket(Gin,2);
+        assertEquals(4, shoppingBasketForRuri.getNumberOfItemsInTheBasket());
+        assertEquals(39.99, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     //Total Discount Over 20
     @Test
     public void ifTotalIsOverTwentyTrue(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        assertEquals(true, shoppingBasket.isTotalOverTwenty());
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        assertEquals(true, shoppingBasketForRuri.isTotalOverTwenty());
 
     }
 
     @Test
     public void ifTotalIsOverTwentyFalse(){
-        shoppingBasket.addItemToBasket(Gin);
-        assertEquals(false, shoppingBasket.isTotalOverTwenty());
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        assertEquals(false, shoppingBasketForRuri.isTotalOverTwenty());
 
     }
 
     @Test
     public void canApplyTenPercentOff(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyTenPercentOff();
-        assertEquals(22.50, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        shoppingBasketForRuri.applyTenPercentOff();
+        assertEquals(22.49, shoppingBasketForRuri.getTotal(),0.00);
     }
-
-    //This test at the moment can't work with price like £19.99,
-    //it will return a double figure with 3 or 4 digits,
-    //I have try to use the String.format to display but then the calculation didn't work.
-
 
 
      //Test with Loyal Card Discount
     @Test
     public void loyalCardCustomerCanApplyLoyalCardDiscountWithJustGin(){
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        assertEquals(14.70, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForDuncan.addItemToBasket(Gin,1);
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        assertEquals(14.70, shoppingBasketForDuncan.getTotal(),0.00);
     }
 
     @Test
     public void normalCustomerConNotApplyLoyalCardDiscountWithJustGin(){
-        shoppingBasket.addItemToBasket(Gin);
-        assertEquals(15.00, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        assertEquals(15.00, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void loyalCardCustomerCanApplyLoyalCardDiscountWithBuyOneGetOneFreeCD(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        assertEquals(9.80, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForDuncan.buyOneGetOneFree(CD,2);
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        assertEquals(9.79, shoppingBasketForDuncan.getTotal(),0.00);
     }
 
     @Test
     public void normalCustomerConNotApplyLoyalCardDiscountWithBuyOneGetOneFreeCD(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        assertEquals(10.00, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        assertEquals(9.99, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     @Test
     public void loyalCardCustomerCanApplyLoyalCardDiscountWithBuyOneGetOneFreeCDAndOverTwentyPoundDiscount(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyTenPercentOff();
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        assertEquals(22.05, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForDuncan.buyOneGetOneFree(CD,2);
+        shoppingBasketForDuncan.addItemToBasket(Gin,1);
+        shoppingBasketForDuncan.applyTenPercentOff();
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        assertEquals(22.04, shoppingBasketForDuncan.getTotal(),0.00);
     }
 
     @Test
-    public void normalCustomerConNotApplyLoyalCardDiscountButCanAppyWithBuyOneGetOneFreeCDAndOverTwentyPoundDiscount(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyTenPercentOff();
-        assertEquals(22.50, shoppingBasket.getTotal(),0.00);
+    public void normalCustomerConNotApplyLoyalCardDiscountButCanApplyWithBuyOneGetOneFreeCDAndOverTwentyPoundDiscount(){
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        shoppingBasketForRuri.applyTenPercentOff();
+        assertEquals(22.49, shoppingBasketForRuri.getTotal(),0.00);
     }
 
     //Can Charge Customers
     @Test
     public void canChargeLoyalCardCustomerCanApplyLoyalCardDiscountWithJustGin() {
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        shoppingBasket.chargeCustomer(Duncan);
-        assertEquals(14.70, shoppingBasket.getTotal(), 0.00);
+        shoppingBasketForDuncan.addItemToBasket(Gin,1);
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        shoppingBasketForDuncan.chargeCustomer();
+        assertEquals(14.70, shoppingBasketForDuncan.getTotal(), 0.00);
         assertEquals(85.30, Duncan.getWallet(), 0.00);
     }
 
     @Test
     public void canChargeNormalCustomerConNotApplyLoyalCardDiscountWithJustGin(){
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.chargeCustomer(Ruri);
-        assertEquals(15.00, shoppingBasket.getTotal(),0.00);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        shoppingBasketForRuri.chargeCustomer();
+        assertEquals(15.00, shoppingBasketForRuri.getTotal(),0.00);
         assertEquals(85.00, Ruri.getWallet(), 0.00);
     }
 
 
     @Test
     public void canChargeLoyalCardCustomerCanApplyLoyalCardDiscountWithBuyOneGetOneFreeCD(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        shoppingBasket.chargeCustomer(Duncan);
-        assertEquals(9.80, shoppingBasket.getTotal(),0.00);
-        assertEquals(90.20, Duncan.getWallet(), 0.00);
+        shoppingBasketForDuncan.buyOneGetOneFree(CD,2);
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        shoppingBasketForDuncan.chargeCustomer();
+        assertEquals(9.79, shoppingBasketForDuncan.getTotal(),0.00);
+        assertEquals(90.21, Duncan.getWallet(), 0.00);
     }
 
     @Test
     public void canChargeNormalCustomerConNotApplyLoyalCardDiscountWithBuyOneGetOneFreeCD(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.chargeCustomer(Ruri);
-        assertEquals(10.00, shoppingBasket.getTotal(),0.00);
-        assertEquals(90.00, Ruri.getWallet(), 0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.chargeCustomer();
+        assertEquals(9.99, shoppingBasketForRuri.getTotal(),0.00);
+        assertEquals(90.01, Ruri.getWallet(), 0.00);
     }
 
     @Test
     public void canChargeLoyalCardCustomerCanApplyLoyalCardDiscountWithBuyOneGetOneFreeCDAndOverTwentyPoundDiscount(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyTenPercentOff();
-        shoppingBasket.applyLoyalDiscount(Duncan);
-        shoppingBasket.chargeCustomer(Duncan);
-        assertEquals(22.05, shoppingBasket.getTotal(),0.00);
-        assertEquals(77.95, Duncan.getWallet(), 0.00);
+        shoppingBasketForDuncan.buyOneGetOneFree(CD,2);
+        shoppingBasketForDuncan.addItemToBasket(Gin,1);
+        shoppingBasketForDuncan.applyTenPercentOff();
+        shoppingBasketForDuncan.applyLoyalDiscount(Duncan);
+        shoppingBasketForDuncan.chargeCustomer();
+        assertEquals(22.04, shoppingBasketForDuncan.getTotal(),0.00);
+        assertEquals(77.96, Duncan.getWallet(), 0.00);
     }
 
     @Test
     public void canChargeNormalCustomerConNotApplyLoyalCardDiscountButCanAppyWithBuyOneGetOneFreeCDAndOverTwentyPoundDiscount(){
-        shoppingBasket.buyOneGetOneFree(CD);
-        shoppingBasket.addItemToBasket(Gin);
-        shoppingBasket.applyTenPercentOff();
-        shoppingBasket.chargeCustomer(Ruri);
-        assertEquals(22.50, shoppingBasket.getTotal(),0.00);
-        assertEquals(77.50, Ruri.getWallet(), 0.00);
+        shoppingBasketForRuri.buyOneGetOneFree(CD,2);
+        shoppingBasketForRuri.addItemToBasket(Gin,1);
+        shoppingBasketForRuri.applyTenPercentOff();
+        shoppingBasketForRuri.chargeCustomer();
+        assertEquals(22.49, shoppingBasketForRuri.getTotal(),0.00);
+        assertEquals(77.51, Ruri.getWallet(), 0.00);
     }
 
 

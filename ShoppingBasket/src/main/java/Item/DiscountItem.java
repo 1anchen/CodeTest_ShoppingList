@@ -11,7 +11,7 @@ public class DiscountItem extends Item implements IDiscount {
 
     //set second item price and return the item
     @Override
-    public Item GetSecondFree(DiscountItem item) {
+    public Item getSecondFree(DiscountItem item) {
         item.setPrice(0);
         return item;
     }

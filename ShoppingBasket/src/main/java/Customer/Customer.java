@@ -9,7 +9,11 @@ public class Customer {
     }
 
     public double getWallet() {
-        return wallet;
+        return this.roundWallet();
+    }
+
+    private double roundWallet(){
+        return wallet= Math.round(wallet*100.00)/100.00;
     }
 
     public void setWallet(double wallet) {

@@ -1,16 +1,12 @@
 package Item;
 
-import Interface.IDiscount;
-
-import java.text.DecimalFormat;
-
 public class Item {
 
     protected int id;
     protected String name;
-    protected Double price;
+    protected double price;
 
-    public Item(int id, String name, Double price){
+    public Item(int id, String name, double price){
         this.id = id;
         this.name = name;
         this.price = price;
